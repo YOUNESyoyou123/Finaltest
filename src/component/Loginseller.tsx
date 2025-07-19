@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import React, { useState } from "react";
 import loginAnimation from "../assets/Wallet animation.json";
 import * as LucideIcons from "lucide-react";

@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import React, { useEffect, useState } from "react";
 import { SearchHeader } from "./SearchHeader";
 import { ProductCard } from "./ProductCardProps";

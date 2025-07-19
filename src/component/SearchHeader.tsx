@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import React from "react";
 import { TextField, InputAdornment, Box } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";

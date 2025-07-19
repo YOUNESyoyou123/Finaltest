@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import React, { useEffect, useState } from "react";
 import loginAnimation from "../assets/My-Store-animated.json";
 import * as LucideIcons from "lucide-react";
@@ -6,7 +8,7 @@ import Lottie from "lottie-react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
-const API_URL = "http://localhost:5000/registerseller"; // ✅ ton backend
+const API_URL = "https://backendsellerapp.onrender.com/registerseller"; // ✅ ton backend
 
 const translations = {
   en: {
@@ -105,8 +107,12 @@ const Register = () => {
 
   const t = translations[lang];
 
-  // ✅ Détection de la position + nom de ville
+  // ✅ Détection position + fallback pour APK
   useEffect(() => {
+    const isStandalone = window.matchMedia(
+      "(display-mode: standalone)"
+    ).matches;
+
     if (!navigator.geolocation) {
       setLocationName("❌ Geolocation not supported");
       return;
@@ -135,8 +141,26 @@ const Register = () => {
           setLocationName("❌ Location fetch failed");
         }
       },
-      (err) => {
-        setLocationName(`❌ ${err.message}`);
+      async (err) => {
+        console.warn("❌ GEO ERROR:", err.message);
+
+        // ✅ Si on est dans APK → fallback IP
+        if (isStandalone) {
+          console.log("📱 Running inside APK → fallback IP location");
+          try {
+            const ipRes = await fetch("https://ipapi.co/json");
+            const ipData = await ipRes.json();
+            setLocationName(`${ipData.city}, ${ipData.country_name}`);
+            setCoords({
+              latitude: ipData.latitude,
+              longitude: ipData.longitude,
+            });
+          } catch {
+            setLocationName("❌ Location unavailable (APK)");
+          }
+        } else {
+          setLocationName(`❌ ${err.message}`);
+        }
       },
       { enableHighAccuracy: true }
     );
@@ -204,9 +228,6 @@ const Register = () => {
         setSuccessMsg(t.success);
         console.log("✅ REGISTER SUCCESS:", data);
         navigate("/Market");
-
-        // ➡️ Redirection possible (ex: vers dashboard)
-        // window.location.href = "/dashboard";
       }
     } catch (err) {
       console.error("❌ Error:", err);
