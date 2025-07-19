@@ -1,6 +1,4 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+
 import Login from "./component/Login";
 import Register from "./component/Register2";
 import Registerclient from "./component/Register1";
